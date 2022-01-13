@@ -1,6 +1,6 @@
 #Discord Bot Made for Twitch.tv/Naenaehomie discord streaming server! Made By Slothy#4484 ( Any questions Please contact ) https://discord.gg/p8GrXvwxck #
 
-
+from os import getenv
 
 import random
 
@@ -211,4 +211,4 @@ async def unmute(ctx, member: discord.Member):
     await member.send(f"You were unmuted in the server {ctx.guild.name}")
 
 
-client.run('ODQ3NjgxNDE2NDQzNzIzODE2.YLBm1g.W2Q8HoRvuLrFEzF8zuE0A2uTcSM')
+client.run(getenv('TOKEN'))
