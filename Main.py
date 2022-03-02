@@ -8,6 +8,7 @@ import discord
 
 from discord.ext import commands
 
+import datetime
 
 intents = discord.Intents(messages = True, guilds = True, reactions = True, members = True, presences = True)
 
@@ -49,8 +50,8 @@ async def on_member_remove(member):
 
 async def ping(ctx):
 
-        await ctx.send(f'Pong! {round(client.latency * 1000)}ms') # Basic making sure it works command ( Ignore )
-
+        b = discord.Embed(title="What is my ping?", description=f'Pong! {round(client.latency * 1000)}ms)')
+        ctx.send(embed=b)
 
 
 @client.command(aliases=['8ball', 'test'])
@@ -97,15 +98,15 @@ async def _8ball(ctx,*, question):
 
                      'Very doubtful']
 
-    await ctx.send(f'Question: {question}\nAnswer: {random.choice(responses)}')  # 8ball thing
-
+b = discord.Embed(title='8 Ball?!', description='Question: {question}\nAnswer: {random.choice(responses)}')
+ctx.send(embed=b)
 
 
 @client.command()
 
 async def twitch(ctx):
-
-        await ctx.send('Twitch: https://www.twitch.tv/naenaehomie :Naenaehomie:') #Nae Twitch command
+        b = discord.Embed(title='My Twitch!', description='Twitch: https://www.twitch.tv/naenaehomie')
+        ctx.send(embed=b)
 
 @client.command()
 
@@ -124,6 +125,16 @@ async def clear(ctx, amount=5):
 
         await ctx.send('messages have been cleared! My work here is done **Dashes away**')
 
+
+# BETA CALL #
+client.command()
+@commands.has_permissions(adminstrator=True)
+async def clear(ctx, amount=5):
+	await ctx.channel.purge(limit=ammount)
+
+
+
+# BETA END #
 
 
 @client.command(description="Kicks People!") # Kicks people
