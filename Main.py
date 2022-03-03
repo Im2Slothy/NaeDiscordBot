@@ -10,6 +10,8 @@ from discord.ext import commands
 
 import datetime
 
+import math
+
 intents = discord.Intents(messages = True, guilds = True, reactions = True, members = True, presences = True)
 
 client = commands.Bot(command_prefix = '.', intents = intents)
@@ -113,6 +115,65 @@ async def twitch(ctx):
 async def support(ctx):
 
         await ctx.send('If you need help make a ticket inside of #🚸tech-support-form') #Help meh!
+
+
+#------------------------------------Calculator-------------------------------------------
+
+@client.command()
+async def math(ctx):
+
+# Math Definitions # 
+
+        def add(n: float, n2: float):
+                return n + n2
+        def sub(n: float, n2: float):
+                return n - n2
+        def div(n: float, n2: float):
+                return n / n2
+        def mult(n: float, n2: float):
+                return n * n2
+
+# Math calculations # 
+
+@client.command()
+async def mathadd(ctx, x: float, y: float):
+        try:
+                result = add(x, y)
+                await ctx.send(result)
+
+        except:
+                pass
+
+@client.command()
+async def mathsub(ctx, x: float, y: float):
+        try:
+                result = sub(x, y)
+                await ctx.send(result)
+
+        except:
+                pass
+
+@client.command()
+async def mathmult(ctx, x: float, y: float):
+        try:
+                result = mult(x, y)
+                await ctx.send(result)
+
+        except:
+                pass
+
+@client.command()
+async def mathdiv(ctx, x: float, y: float):
+        try:
+                result = div(x, y)
+                await ctx.send(result)
+
+        except:
+                pass
+
+
+#----------------------------------------------------------------------------------------
+
 #------------------------------------Moderation-------------------------------------------
 
 @client.command(description="Clears Chat!") # Kicks people
@@ -130,7 +191,7 @@ async def clear(ctx, amount=5):
 client.command()
 @commands.has_permissions(adminstrator=True)
 async def clear(ctx, amount=5):
-	await ctx.channel.purge(limit=ammount)
+        await ctx.channel.purge(limit=ammount)
 
 
 
