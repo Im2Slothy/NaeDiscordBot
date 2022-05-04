@@ -1,16 +1,17 @@
 #Discord Bot Made for Twitch.tv/Naenaehomie discord streaming server! Made By Slothy#4484 ( Any questions Please contact ) https://discord.gg/p8GrXvwxck #
 
-from os import getenv
 
+import datetime
+import os
+import json
+import math
 import random
-
+from tkinter import Entry
+from typing_extensions import Self
+import asyncio
 import discord
 
 from discord.ext import commands
-
-import datetime
-
-import math
 
 intents = discord.Intents(messages = True, guilds = True, reactions = True, members = True, presences = True)
 
@@ -27,12 +28,21 @@ async def on_ready():
     print('NaeBot is ready for service!')
 
 
-
 @client.event
-
 async def on_member_join(member):
+    guild = client.get_guild(665944107025301504)
+    channel = guild.get_channel(744834622373756950)
+    embed=discord.Embed(title="Welcome!", description=f"Hello, {member.mention} Please read below as there might be some info that is of interest to you!")
+    embed.set_author(name="Naenaehomie's Streaming Server", icon_url="https://media.discordapp.net/attachments/618984746977853460/944471778103787570/Logo.png?width=1015&height=571")
+    embed.add_field(name="Welcome!", value="Hello and welcome to the official discord streaming server for Naenaehomie! Coming from myself I hope you enjoy, Invite your friends!", inline=True)
+    embed.add_field(name="Getting Started", value=f"Before you begin your journey in the server make sure to read the rules and agree to them! If you dare break the rules the mods will come after you!", inline=True)
+    embed.add_field(name="Information", value="Once you are an official member of the community we ask that you check the information tap at the top of the discord! You should find things there for any question that you might have!", inline=True)
+    embed.add_field(name="Perks", value="Some things that you get while being a part of the community is the chance to meet and game with me! If you are really enjoying the community and want to subcribe you get access to the twitch emote when your discord is linked to your twitch! FYI... You can use this emote anywhere, you dont even need Discord Nitro!", inline=True)
+    embed.set_footer(text="Stay cool!")
+    role = discord.utils.get(guild.roles, name="Nae's Babies", id=686103426052259855)
+    await member.add_roles(role)
+    await channel.send(embed=embed)
 
-        print(f'{member} has joined {member.guild}')
 
 
 
@@ -41,6 +51,28 @@ async def on_member_join(member):
 async def on_member_remove(member):
 
         print(f'{member} has left or was removed from {member.guild}')
+#------------------------------------LOGs---------------------------------------------
+@client.event
+async def on_message_delete(message):
+    embed=discord.Embed(title=f"{message.author.name} has deleted a message\nMessage deleted in {message.channel}", color=0xffff)
+    embed.add_field(name= message.content ,value="This is the message that has been deleted", inline=True)
+    embed.timestamp = datetime.datetime.utcnow()
+    embed.set_footer(text=f"ID: {message.author.id} ")
+    channel=client.get_channel(850007615664553998)
+    await channel.send(embed=embed)
+
+
+@client.event
+async def on_message_edit(message_before, message_after):
+    embed=discord.Embed(title=f"{message_before.author.name} edited a message\nMessage edited {message_before.channel}!", color=0xffff)
+    embed.add_field(name= "Before" ,value= message_before.content, inline=False)
+    embed.add_field(name= "After" ,value= message_after.content, inline=False)
+    embed.timestamp = datetime.datetime.utcnow()
+    embed.set_footer(text=f"ID: {message_before.author.id}")
+    channel=client.get_channel(850007615664553998)
+    await channel.send(embed=embed)
+
+
 
 
 
@@ -48,12 +80,20 @@ async def on_member_remove(member):
 
 #------------------------------------Commands---------------------------------------------
 
+@client.command(help = "Tells you how many bitches you get... - Made for John")
+async def bitches(ctx):
+    boi = ["0", "2", "3", "4", "5", "6", "7", "8", "9", "Too many for you to count!"]
+    oi = ((random.choice(boi)))
+    await ctx.send(f"You pull {oi} bitches!")
+
+
+
+
+
 @client.command()
-
 async def ping(ctx):
-
-        b = discord.Embed(title="What is my ping?", description=f'Pong! {round(client.latency * 1000)}ms)')
-        ctx.send(embed=b)
+    b=discord.Embed(title=f"Ping?!",description=f"Pong! {round(client.latency * 1000)}ms",color=0xFF5733)
+    await ctx.send(embed=b)
 
 
 @client.command(aliases=['8ball', 'test'])
@@ -100,80 +140,104 @@ async def _8ball(ctx,*, question):
 
                      'Very doubtful']
 
-b = discord.Embed(title='8 Ball?!', description='Question: {question}\nAnswer: {random.choice(responses)}')
-ctx.send(embed=b)
+    b=discord.Embed(title=f"The 8Ball Says!",description=f'Question: {question}\nAnswer: {random.choice(responses)}',color=0x660066)
+    await ctx.send(embed=b)  
 
 
 @client.command()
 
 async def twitch(ctx):
-        b = discord.Embed(title='My Twitch!', description='Twitch: https://www.twitch.tv/naenaehomie')
-        ctx.send(embed=b)
+        b=discord.Embed(title=f"The Twitch!",description="https://Twitch.tv/naenaehomie",color=0x6495ED)
+        await ctx.send(embed=b)
 
 @client.command()
 
 async def support(ctx):
 
-        await ctx.send('If you need help make a ticket inside of #🚸tech-support-form') #Help meh!
+        b=discord.Embed(title=f"You need help?!",description="If you need help make a ticket inside of #🚸tech-support-form",color=0x6495ED)
+        await ctx.send(embed=b)
 
+@client.command(aliases=["mc"])
 
-#------------------------------------Calculator-------------------------------------------
+async def members(ctx):
 
-@client.command()
-async def math(ctx):
+    a=ctx.guild.member_count
+    b=discord.Embed(title=f"Members in {ctx.guild.name}",description=a,color=discord.Color((0xffff00)))
+    await ctx.send(embed=b)
 
-# Math Definitions # 
+#MATH TEST #
 
-        def add(n: float, n2: float):
-                return n + n2
-        def sub(n: float, n2: float):
-                return n - n2
-        def div(n: float, n2: float):
-                return n / n2
-        def mult(n: float, n2: float):
-                return n * n2
+def add(n: float, n2: float):
+    return n + n2
 
-# Math calculations # 
+def sub(n: float, n2: float):
+    return n - n2
+
+def rando(n: int, n2: int):
+    return random.randint(n, n2)
+
+def div(n: float, n2: float):
+    return n / n2
+
+def sqrt(n: float):
+    return math.sqrt(n)
+
+def mult(n: float, n2: float):
+    return n * n2
 
 @client.command()
 async def mathadd(ctx, x: float, y: float):
-        try:
-                result = add(x, y)
-                await ctx.send(result)
+    try:
+        result = add(x, y)
+        await ctx.send(result)
 
-        except:
-                pass
+    except:
+        pass
 
 @client.command()
 async def mathsub(ctx, x: float, y: float):
-        try:
-                result = sub(x, y)
-                await ctx.send(result)
+    try:
+        result = sub(x, y)
+        await ctx.send(result)
 
-        except:
-                pass
+    except:
+        pass
 
 @client.command()
-async def mathmult(ctx, x: float, y: float):
-        try:
-                result = mult(x, y)
-                await ctx.send(result)
+async def mathrando(ctx, x: int, y: int):
+    try:
+        result = rando(x, y)
+        await ctx.send(result)
 
-        except:
-                pass
+    except:
+        pass
 
 @client.command()
 async def mathdiv(ctx, x: float, y: float):
-        try:
-                result = div(x, y)
-                await ctx.send(result)
+    try:
+        result = div(x, y)
+        await ctx.send(result)
 
-        except:
-                pass
+    except:
+        pass
 
+@client.command()
+async def mathmult(ctx, x: float, y: float):
+    try:
+        result = mult(x, y)
+        await ctx.send(result)
 
-#----------------------------------------------------------------------------------------
+    except:
+        pass
 
+@client.command()
+async def mathsqrt(ctx, x: float):
+    try:
+        result = sqrt(x)
+        await ctx.send(result)
+
+    except:
+        pass
 #------------------------------------Moderation-------------------------------------------
 
 @client.command(description="Clears Chat!") # Kicks people
@@ -186,16 +250,6 @@ async def clear(ctx, amount=5):
 
         await ctx.send('messages have been cleared! My work here is done **Dashes away**')
 
-
-# BETA CALL #
-client.command()
-@commands.has_permissions(adminstrator=True)
-async def clear(ctx, amount=5):
-        await ctx.channel.purge(limit=ammount)
-
-
-
-# BETA END #
 
 
 @client.command(description="Kicks People!") # Kicks people
@@ -256,31 +310,29 @@ async def unban(ctx, *, member):
     await ctx.send(f'Unbanned {obj} My work here is done **Dashes away**')
 
 
-
-@client.command(description="Mutes the specified user.")
+@client.command(description="Mutes the specified user.") # Mutes user non timed
 @commands.has_role('Server Staff')
-async def mute(ctx, member: discord.Member, *, reason=None):
+async def mute(ctx, member: discord.Member, time, reason=None):
+    desctime = time
     guild = ctx.guild
     mutedRole = discord.utils.get(guild.roles, name="Muted")
-
+    time_convert = {"s":1, "m":60, "h":3600, "d":86400}
+    tempmute= int(time[:-1]) * time_convert[time[-1]]
     if not mutedRole:
-        mutedRole = await guild.create_role(name="Muted")
-
+        mutedRole = discord.utils.get(guild.roles, name="Muted", id=834882506532585533)
         for channel in guild.channels:
             await channel.set_permissions(mutedRole, speak=False, send_messages=False, read_message_history=True, read_messages=False)
-
+    embed = discord.Embed(title="muted", description=f"{member.mention} was muted   for {desctime} ", colour=discord.Colour.light_gray())
+    embed.add_field(name="reason:", value=reason, inline=True)
+    await ctx.send(embed=embed)
     await member.add_roles(mutedRole, reason=reason)
-    await ctx.send(f"Muted {member.mention} for reason {reason} ")
-    await member.send(f"You were muted in the server {guild.name} for {reason}")
-
-@client.command(description="Unmutes a specified user.")
-@commands.has_role('Server Staff')
-async def unmute(ctx, member: discord.Member):
-    mutedRole = discord.utils.get(ctx.guild.roles, name="Muted")
-
+    await asyncio.sleep(tempmute)
+    await member.send(f" you have been muted from: {guild.name} reason: {reason}")
     await member.remove_roles(mutedRole)
-    await ctx.send(f"Unmuted {member.mention}")
-    await member.send(f"You were unmuted in the server {ctx.guild.name}")
 
 
-client.run(getenv('TOKEN'))
+
+
+#-------------------------------------------------------------------------------
+
+client.run('TOKEN')
