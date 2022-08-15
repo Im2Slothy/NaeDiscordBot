@@ -10,7 +10,7 @@ from tkinter import Entry
 from typing_extensions import Self
 import asyncio
 import discord
-
+import typing
 from discord.ext import commands
 
 intents = discord.Intents(messages = True, guilds = True, reactions = True, members = True, presences = True)
@@ -86,8 +86,37 @@ async def bitches(ctx):
     oi = ((random.choice(boi)))
     await ctx.send(f"You pull {oi} bitches!")
 
+@client.command()
+async def erepeat(ctx, *, message):
+    await ctx.send(message)
+    await ctx.message.delete()
 
+@client.command()
+async def embed(ctx):
+    questions = ["Title?", "Description?"]
+    responses = []
 
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel
+
+    for question in questions:
+        try:
+            await ctx.send(question)
+            message = await client.wait_for('message', timeout=15, check=check)
+
+        except asyncio.TimeoutError:
+            await ctx.send("Timeout")
+            return
+
+        else:
+            responses.append(message.content)
+
+    embedVar = discord.Embed(title=responses[0], description=responses[1])
+    await ctx.send(embed=embedVar)
+
+@client.command()
+async def pug(ctx):
+    await ctx.send('Bella Puggis Uggis Wuggis!')
 
 
 @client.command()
@@ -259,7 +288,7 @@ async def clear(ctx, amount=5):
 async def kick(ctx, member : discord.Member, *, reason=None):
 
         await member.kick(reason=reason)
-        
+        await ctx.sent(f'{member.mention} has been kicked!')
 
 
 
@@ -268,13 +297,16 @@ async def kick(ctx, member : discord.Member, *, reason=None):
 
 @commands.has_role('Server Staff')
 
-async def ban(ctx, member : discord.Member, *, reason=None):
-
-        await member.ban(reason=reason)
-
-        await ctx.send(f'Banned {member.mention} My work here is done **Dashes away**')
-
-
+async def ban(ctx, user: typing.Union[discord.Member, int], *, reason=None):
+    guild = client.get_guild(665944107025301504)
+    if user in ctx.guild.members:
+        await user.ban(reason=reason)
+        await ctx.send(f'Banned {user.mention} My work here is done **Dashes Away**')
+        #send banned user a message
+        await user.send(f'You have been banned from {guild.name} for {reason}\nFile a ban appeal here: **LINK**')
+    else:
+        await guild.ban(discord.Object(id = user))
+        await ctx.reply(f'User has been hackbanned!\nUser: <@{user}>\nMy work here is done **Bombaclat!**')
 
 
 @client.command(description="Unbans people!")
